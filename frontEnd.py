@@ -7,6 +7,20 @@ class Window(QWidget):
         super().__init__()
         self.setWindowTitle("Keycap Creator")
         outer = QHBoxLayout()
+        
+        # Raw Data Input
+        rawBox = QGroupBox("Raw Keyboard Data")
+        rawLayout = QVBoxLayout()
+        rawBox.setLayout(rawLayout)
+        rawData = QTextEdit()
+        rawLayout.addWidget(rawData)
+        io = QVBoxLayout()
+        output = QPushButton("Generate File")
+        output.clicked.connect(self.parser())
+        io.addWidget(raw)
+        io.addWidget(output)
+        outer.addLayout(io)
+
         self.setLayout(outer)
         raw = self.rawInput()
         basic = self.basicSettings()
@@ -24,17 +38,8 @@ class Window(QWidget):
         settings.addTab(misc, "Misc Settings")
         settings.addTab(feat, "Features")
         
-        outer.addWidget(raw)
+
         outer.addWidget(settings)
-    def rawInput(self):
-        # Raw Data Input
-        rawBox = QGroupBox("Raw Keyboard Data")
-        rawLayout = QVBoxLayout()
-        rawBox.setLayout(rawLayout)
-        rawData = QTextEdit()
-        rawLayout.addWidget(rawData)
-        
-        return rawBox
     def basicSettings(self):
         # Basic Settings
         basicBox = QGroupBox("Basic Settings")
@@ -43,19 +48,16 @@ class Window(QWidget):
         
         # Basic Settings ComboBoxes
         profiles = ["dcs", "oem", "dsa", "sa", "g20", "disabled"]
-        rows = ["1", "2", "3", "4", "5", "0"]
         stemTypes = ["cherry", "alps", "rounded_cherry", "box_cherry", "filled", "disabled"]
         supportTypes = ["flared", "bars", "flat", "disabled"]
         stemSupportTypes = ["tines", "brim", "disabled"]
         
         profileBox = QComboBox()
-        rowBox = QComboBox()
         stemBox = QComboBox()
         supportBox = QComboBox()
         stemSupportBox = QComboBox()
         
         profileBox.addItems(profiles)
-        rowBox.addItems(rows)
         stemBox.addItems(stemTypes)
         supportBox.addItems(supportTypes)
         stemSupportBox.addItems(stemSupportTypes)
@@ -81,7 +83,6 @@ class Window(QWidget):
         
         # Add Basic Settings in Order
         basicLayout.addRow(QLabel("Keycap Profile"), profileBox)
-        basicLayout.addRow(QLabel("Row"), rowBox)
         basicLayout.addRow(QLabel("Legend"), legend)
         basicLayout.addRow(QLabel("Stem Type"), stemBox)
         basicLayout.addRow(QLabel("Stem Slope"), stemSlope)
@@ -285,6 +286,8 @@ class Window(QWidget):
         featuresLayout.addRow(QLabel("Key Bump Edge"), keyBumpEdge)
         
         return featuresBox
+    def parser(self, data):
+        vars = {}
 app = QApplication([])
 window = Window()
 window.show()
